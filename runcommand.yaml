@@ -1,27 +1,8 @@
 ---
-- name: Run Multiple Commands on Host
-  hosts: all
-  gather_facts: no  # Disable gathering facts to speed up execution (optional)
-
+---
+- name: Execute Command on Host
+  hosts: "{{ host_list }}"
   tasks:
-    - name: Run command 1 and print output
-      command: "hostname -f"
-      register: command_1_output
-      changed_when: false
-      ignore_errors: true
+    - name: Run Command
+      command: "{{ command }}"
 
-    - name: Print output of command 1
-      debug:
-        msg: "Output of command 1: {{ command_1_output.stdout }}"
-
-    - name: Run command 2 and print output
-      command: "df -PhT"
-      register: command_2_output
-      changed_when: false
-      ignore_errors: true
-
-    - name: Print output of command 2
-      debug:
-        msg: "Output of command 2: {{ command_2_output.stdout }}"
-
-    # Add more tasks for additional commands as needed
