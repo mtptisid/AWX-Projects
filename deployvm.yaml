@@ -4,27 +4,20 @@
   gather_facts: no
   tasks:
     - name: Create a new EC2 instance
-      amazon.aws.ec2:
+      amazon.aws.ec2_instance:
         region: "{{ ec2_region }}"
         instance_type: "{{ ec2_instance_type }}"
-        image_id: "{{ ec2_img_id }}"
+        image_id: "{{ ec2_image_id }}"
         key_name: "{{ ec2_key_name }}"
-        security_group_ids: "{{ ec2_security_groups }}"
+        security_group: "{{ ec2_security_group }}"
+        count: 1
         wait: yes
-        wait_timeout: 300
-        instance_tags:
+        tags:
           Name: "{{ ec2_instance_name }}"
-      register: ec2_instance_info
-
-    - name: Wait for the instance to be running
-      amazon.aws.ec2_instance_info:
-        region: "{{ ec2_region }}"
-        instance_ids: "{{ ec2_instance_info.instances[0].id }}"
-      register: ec2_instance_info_detail
-      until: ec2_instance_info_detail.instances[0].state.name == 'running'
-      retries: 30
-      delay: 10
+      register: ec2_instance
+      ignore_errors: yes
 
     - name: Print the instance public IP
       debug:
-        msg: "Public IP: {{ ec2_instance_info_detail.instances[0].public_ip }}"
+        msg: "Public IP: {{ ec2_instance.instance.public_ip }}"
+      when: ec2_instance is defined and ec2_instance.instance.public_ip is defined
