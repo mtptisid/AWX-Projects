@@ -1,0 +1,7 @@
+---
+- name: Example Playbook
+  hosts: aws-host
+  tasks:
+    - name: Example Task
+      debug:
+        msg: "Hello from AWS host!"
