@@ -1,6 +1,6 @@
 ---
 - name: Example Playbook
-  hosts: aws-host
+  hosts: all
   tasks:
     - name: Example Task
       debug:
