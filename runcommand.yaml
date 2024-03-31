@@ -1,7 +1,16 @@
 ---
 - name: Execute Command on Host
   hosts: "{{ host_list }}"
+  gather_facts: no
+  vars:
+    ansible_verbosity: 0
   tasks:
     - name: Run Command
       command: "{{ command }}"
+      register: commandoutput
+      changed_when: false
+      ignore_errors: true
+    - name: Print output of command 1
+      debug:
+        msg: "{{ commandoutput.stdout }}"
 
