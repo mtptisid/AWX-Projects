@@ -1,5 +1,4 @@
 ---
----
 - name: Execute Command on Host
   hosts: "{{ host_list }}"
   tasks:
