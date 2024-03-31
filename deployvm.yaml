@@ -1,28 +1,79 @@
 ---
-- name: Provision EC2 Instance
+- name: Gather AWS Information and Launch EC2 Instance
   hosts: localhost
-  gather_facts: no
+  gather_facts: false
 
   tasks:
     - name: Include AWX Survey Parameters
       include_vars:
         file: "{{ tower_inputfile }}"
 
+    - name: Get AWS regions
+      ec2_region_facts:
+      register: aws_regions
+
+    - name: Extract region names
+      set_fact:
+        region_names: "{{ aws_regions.region_info|map(attribute='region_name')|list }}"
+
+    - name: Get AWS images
+      ec2_ami_facts:
+        owners: ['self']
+      register: aws_images
+
+    - name: Extract image names
+      set_fact:
+        image_names: "{{ aws_images.images|map(attribute='name')|list }}"
+
+    - name: Get existing key pairs
+      ec2_key_info:
+        region: "{{ region }}"
+      register: aws_key_pairs
+      loop: "{{ region_names }}"
+      vars:
+        region: "{{ item }}"
+      when: region_names|length > 0
+
+    - name: Extract key pair names
+      set_fact:
+        key_pair_names: "{{ aws_key_pairs.results|map(attribute='key_pairs')|flatten|unique(attribute='key_name')|list }}"
+
+    - name: Get existing security groups
+      ec2_group_facts:
+        region: "{{ region }}"
+      register: aws_security_groups
+      loop: "{{ region_names }}"
+      vars:
+        region: "{{ item }}"
+      when: region_names|length > 0
+
+    - name: Extract security group names
+      set_fact:
+        security_group_names: "{{ aws_security_groups.results|map(attribute='security_groups')|flatten|unique(attribute='name')|list }}"
+
+    - name: Present Survey
+      pause:
+        prompt: |
+          Choose your options:
+          AWS Region: {{ region_names }}
+          Image: {{ image_names }}
+          Key Pair: {{ key_pair_names }}
+          Security Group: {{ security_group_names }}
+      register: survey_results
+
     - name: Create EC2 Instance
       ec2_instance:
-        key_name: "{{ aws_key_name }}"
+        key_name: "{{ survey_results.user_input['Key Pair'] }}"
         instance_type: t2.micro
-        image: "ami-0c55b159cbfafe1f0"  # RHEL image ID (replace with your desired RHEL AMI ID)
-        region: "{{ aws_region }}"
-        vpc_subnet_id: "{{ aws_subnet_id }}"
-        assign_public_ip: yes
+        image: "{{ survey_results.user_input['Image'] }}"
+        region: "{{ survey_results.user_input['AWS Region'] }}"
+        group: "{{ survey_results.user_input['Security Group'] }}"
+        wait: yes
+        count: 1
         instance_tags:
           Name: "{{ instance_name }}"
-        wait: yes
-      register: ec2
+      register: ec2_instance
 
-    - name: Print Public IP
+    - name: Output Public IP of the created instance
       debug:
-        msg: "Public IP Address: {{ ec2.instances[0].public_ip }}"
-
-    # Add more tasks for additional configuration as needed
+        msg: "Public IP Address: {{ ec2_instance.instances[0].public_ip }}"
