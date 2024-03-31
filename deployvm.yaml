@@ -20,10 +20,11 @@
       amazon.aws.ec2_instance_info:
         region: "{{ ec2_region }}"
         instance_ids: "{{ ec2_instance_info.instances[0].id }}"
-      until: instance_state.name == 'running'
+      register: ec2_instance_info_detail
+      until: ec2_instance_info_detail.instances[0].state.name == 'running'
       retries: 30
       delay: 10
 
     - name: Print the instance public IP
       debug:
-        msg: "{{ ec2_instance_info.instances[0].public_ip }}"
+        msg: "Public IP: {{ ec2_instance_info_detail.instances[0].public_ip }}"
