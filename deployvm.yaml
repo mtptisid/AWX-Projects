@@ -1,0 +1,28 @@
+---
+- name: Provision EC2 Instance
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Include AWX Survey Parameters
+      include_vars:
+        file: "{{ tower_inputfile }}"
+
+    - name: Create EC2 Instance
+      ec2_instance:
+        key_name: "{{ aws_key_name }}"
+        instance_type: t2.micro
+        image: "ami-0c55b159cbfafe1f0"  # RHEL image ID (replace with your desired RHEL AMI ID)
+        region: "{{ aws_region }}"
+        vpc_subnet_id: "{{ aws_subnet_id }}"
+        assign_public_ip: yes
+        instance_tags:
+          Name: "{{ instance_name }}"
+        wait: yes
+      register: ec2
+
+    - name: Print Public IP
+      debug:
+        msg: "Public IP Address: {{ ec2.instances[0].public_ip }}"
+
+    # Add more tasks for additional configuration as needed
