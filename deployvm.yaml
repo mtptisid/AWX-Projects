@@ -4,7 +4,7 @@
   gather_facts: no
   tasks:
     - name: Create a new EC2 instance
-      amazon.aws.ec2:
+      community.amazon.aws.ec2:
         region: "{{ ec2_region }}"
         instance_type: "{{ ec2_instance_type }}"
         image_id: "{{ ec2_img_id }}"
@@ -17,7 +17,7 @@
       register: ec2_instance_info
 
     - name: Wait for the instance to be running
-      amazon.aws.ec2_instance_info:
+      community.amazon.aws.ec2_instance_info:
         region: "{{ ec2_region }}"
         instance_ids: "{{ ec2_instance_info.instances[0].id }}"
       until: instance_state.name == 'running'
