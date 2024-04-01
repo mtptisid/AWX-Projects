@@ -1,0 +1,13 @@
+---
+- name: Get EC2 Instance Details
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Retrieve EC2 Instance Information
+      ec2_instance_info:
+        region: {{ region_name }}
+      register: instance_details
+
+    - name: Display Instance Details
+      debug:
+        var: instance_details.instances
