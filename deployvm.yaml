@@ -20,7 +20,7 @@
     - name: Wait for the instance to be running
       ec2_instance_info:
         region: "{{ ec2_region }}"
-        instance_ids: "{{ ec2_instance_info.instances[0].id }}"
+        instance_ids: "{{ ec2_instance.instances[0].id }}"
         register: ec2_instance_info_detail
         until: ec2_instance_info_detail.instances[0].state.name == 'running'
         retries: 30
