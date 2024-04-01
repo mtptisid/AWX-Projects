@@ -8,6 +8,11 @@
         region: "{{ region_name }}"
       register: my_instance_list
 
+
+    - name: Debug ec2_instances variable
+      debug:
+        var: my_instance_list
+        
     - name: Display instance details in tabular format
       debug:
         msg: |
