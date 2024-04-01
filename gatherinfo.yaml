@@ -15,5 +15,5 @@
         
     - name: Display instance details in tabular format
       debug:
-        msg: "{{ my_instance_list.instance_id }} | {{ my_instance_list.tags.Name | default('N/A') }} | {{ my_instance_list.instance_type }} | {{ my_instance_list.state.name }} | {{ my_instance_list.private_ip_address }} | {{ my_instance_list.public_ip_address }} | {{ my_instance_list.security_groups[0].group_name }} | {{ region_name }}"
+        msg: "{{ item.instance_id }} | {{ item.tags.Name | default('N/A') }} | {{ item.instance_type }} | {{ item.state.name }} | {{ item.private_ip_address }} | {{ item.public_ip_address }} | {{ item.security_groups[0].group_name }} | {{ region_name }}"
       loop: "{{ my_instance_list.instances }}"
