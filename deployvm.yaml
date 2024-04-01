@@ -24,6 +24,12 @@
       register: ec2_instance
       ignore_errors: yes
       connection: local
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+      environment:
+        AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+        AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+        AWS_DEFAULT_REGION: "{{ lookup('env', 'AWS_DEFAULT_REGION') }}"
 
     - name: Print the instance public IP
       debug:
