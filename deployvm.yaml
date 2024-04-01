@@ -2,17 +2,8 @@
 - name: Create a new EC2 instance
   hosts: localhost
   gather_facts: no
-  vars:
-    ANSIBLE_COLLECTIONS_PATHS:
-      - /home/ansawx/.ansible/collections
-      - /home/ansawx/.local/lib/python3.9/site-packages/ansible_collections
-    environment:
-      AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-      AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-      AWS_DEFAULT_REGION: "{{ lookup('env', 'AWS_DEFAULT_REGION') }}"
   collections:
     - amazon.aws
-
   tasks:
     - name: Create a new EC2 instance
       amazon.aws.ec2_instance:
