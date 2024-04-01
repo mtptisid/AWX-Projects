@@ -4,7 +4,7 @@
   gather_facts: no
   tasks:
     - name: Get all EC2 instance information
-      amazon.aws.ec2_instance_info:
+      ec2_instance_info:
         region: "your_aws_region"
       register: ec2_instances
 
