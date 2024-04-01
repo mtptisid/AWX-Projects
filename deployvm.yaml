@@ -15,20 +15,7 @@
         wait: yes
         tags:
           Name: "{{ ec2_instance_name }}"
-      register: ec2_instance_info
-
-    - set_fact:
-        id: "{{ ec2_instance_info }}"
-
-    - name: Wait for the instance to be running
-      ec2_instance_info:
-        filters:
-          "tag:Name": "{{ ec2_instance_name }}"
-        register: ec2_instance_info_detail
-        until: ec2_instance_info_detail.instances[0].state.name == 'running'
-        retries: 30
-        delay: 10
-
+      register: ec2_instance
       
     - name: Print the instance public IP
       debug:
