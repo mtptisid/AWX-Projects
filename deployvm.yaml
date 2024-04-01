@@ -16,11 +16,17 @@
         tags:
           Name: "{{ ec2_instance_name }}"
       register: ec2_instance
-      ignore_errors: yes
-      connection: local
-      vars:
-        ansible_python_interpreter: /usr/bin/python3
 
+    - name: Wait for the instance to be running
+      ec2_instance_info:
+        region: "{{ ec2_region }}"
+        instance_ids: "{{ ec2_instance_info.instances[0].id }}"
+        register: ec2_instance_info_detail
+        until: ec2_instance_info_detail.instances[0].state.name == 'running'
+        retries: 30
+        delay: 10
+
+      
     - name: Print the instance public IP
       debug:
         msg: "Public IP: {{ ec2_instance.instance.public_ip }}"
