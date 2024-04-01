@@ -5,7 +5,7 @@
   tasks:
     - name: Get all EC2 instance information
       ec2_instance_info:
-        region: "your_aws_region"
+        region: "{{ region_name }}"
       register: ec2_instances
 
     - name: Display instance details in tabular format
