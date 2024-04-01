@@ -5,6 +5,8 @@
     ANSIBLE_COLLECTIONS_PATHS:
       - /home/ansawx/.ansible/collections
       - /home/ansawx/.local/lib/python3.9/site-packages/ansible_collections
+  collections:
+    - amazon.aws
 
   tasks:
     - name: Create a new EC2 instance
