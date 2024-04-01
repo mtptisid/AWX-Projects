@@ -6,12 +6,12 @@
     - name: Get all EC2 instance information
       ec2_instance_info:
         region: "{{ region_name }}"
-      register: ec2_instances
+      register: my_instance_list
 
     - name: Display instance details in tabular format
       debug:
         msg: |
-          {% set instances = ec2_instances.instances %}
+          {% set instances = my_instance_list.instances %}
           {% if instances %}
           Instance ID      | Instance Name        | Instance Type | State    | Security Groups    | Region
           ----------------|----------------------|---------------|----------|--------------------|-------
