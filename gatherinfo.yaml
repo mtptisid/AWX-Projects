@@ -1,13 +1,23 @@
 ---
-- name: Get EC2 Instance Details
+- name: Gather EC2 instance details
   hosts: localhost
   gather_facts: no
   tasks:
-    - name: Retrieve EC2 Instance Information
-      ec2_instance_info:
-        region: "{{ region_name }}"
-      register: instance_details
+    - name: Get all EC2 instance information
+      amazon.aws.ec2_instance_info:
+        region: "your_aws_region"
+      register: ec2_instances
 
-    - name: Display Instance Details
+    - name: Display instance details in tabular format
       debug:
-        var: instance_details.instances
+        msg: |
+          {% set instances = ec2_instances.instances %}
+          {% if instances %}
+          Instance ID      | Instance Name        | Instance Type | State    | Security Groups    | Region
+          ----------------|----------------------|---------------|----------|--------------------|-------
+          {% for instance in instances %}
+          {{ instance.id }} | {{ instance.tags.Name | default('N/A') }} | {{ instance.instance_type }} | {{ instance.state.name }} | {{ instance.security_groups | map(attribute='group_name') | join(', ') }} | {{ instance.region }}
+          {% endfor %}
+          {% else %}
+          No instances found.
+          {% endif %}
