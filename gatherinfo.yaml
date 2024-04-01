@@ -15,14 +15,5 @@
         
     - name: Display instance details in tabular format
       debug:
-        msg: |
-          {% set instances = my_instance_list.instances %}
-          {% if instances %}
-          Instance ID      | Instance Name        | Instance Type | State    | Security Groups    | Region
-          ----------------|----------------------|---------------|----------|--------------------|-------
-          {% for instance in instances %}
-          {{ instance.id }} | {{ instance.tags.Name | default('N/A') }} | {{ instance.instance_type }} | {{ instance.state.name }} | {{ instance.security_groups | map(attribute='group_name') | join(', ') }} | {{ instance.region }}
-          {% endfor %}
-          {% else %}
-          No instances found.
-          {% endif %}
+        msg: "{{ my_instance_list.instance_id }} | {{ my_instance_list.tags.Name | default('N/A') }} | {{ my_instance_list.instance_type }} | {{ my_instance_list.state.name }} | {{ my_instance_list.private_ip_address }} | {{ my_instance_list.public_ip_address }} | {{ my_instance_list.security_groups[0].group_name }} | {{ region_name }}"
+      loop: "{{ my_instance_list.instances }}"
