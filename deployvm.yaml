@@ -15,8 +15,6 @@
         wait: yes
         tags:
           Name: "{{ ec2_instance_name }}"
-      loop:
-        - 0
       register: ec2_instance
       ignore_errors: yes
       connection: local
