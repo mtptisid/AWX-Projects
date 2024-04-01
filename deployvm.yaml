@@ -1,5 +1,6 @@
 ---
 - name: Create a new EC2 instance
+  hosts: localhost
   gather_facts: no
   vars:
     ANSIBLE_COLLECTIONS_PATHS:
@@ -22,6 +23,7 @@
           Name: "{{ ec2_instance_name }}"
       register: ec2_instance
       ignore_errors: yes
+      connection: local
 
     - name: Print the instance public IP
       debug:
