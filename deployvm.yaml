@@ -12,10 +12,11 @@
         image_id: "{{ ec2_image_id }}"
         key_name: "{{ ec2_key_name }}"
         security_group: "{{ ec2_security_group }}"
-        count: 1
         wait: yes
         tags:
           Name: "{{ ec2_instance_name }}"
+      loop:
+        - 0
       register: ec2_instance
       ignore_errors: yes
       connection: local
