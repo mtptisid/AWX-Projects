@@ -18,12 +18,12 @@
       register: ec2_instance_info
 
     - set_fact:
-        id: "{{ ec2_instance_info.instance.id }}"
+        id: "{{ ec2_instance_info }}"
 
     - name: Wait for the instance to be running
       ec2_instance_info:
-        region: "{{ ec2_region }}"
-        instance_ids: "{{ id }}"
+        filters:
+          "tag:Name": "{{ ec2_instance_name }}"
         register: ec2_instance_info_detail
         until: ec2_instance_info_detail.instances[0].state.name == 'running'
         retries: 30
