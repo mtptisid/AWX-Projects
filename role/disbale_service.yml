@@ -1,1 +1,116 @@
+---
+- name: Check if the service exists with systemctl
+  ansible.builtin.command:
+    cmd: "systemctl list-units --type=service --all | grep {{ service_name }}.service"
+  register: service_check_systemd
+  ignore_errors: yes
+  become: yes
+
+- name: Check if the service exists in /etc/init.d/ for RHEL 6 or earlier
+  ansible.builtin.stat:
+    path: "/etc/init.d/{{ service_name }}"
+  register: service_check_initd
+  when: ansible_facts['os_family'] == 'RedHat' and ansible_facts['distribution_major_version'] < '7'
+  become: yes
+
+- name: Check if the service is managed by chkconfig for RHEL 6 or earlier
+  ansible.builtin.command:
+    cmd: "chkconfig --list | grep {{ service_name }}"
+  register: service_check_chkconfig
+  ignore_errors: yes
+  when: ansible_facts['os_family'] == 'RedHat' and ansible_facts['distribution_major_version'] < '7'
+  become: yes
+
+- name: Stop the service with systemctl
+  ansible.builtin.systemd:
+    name: "{{ service_name }}"
+    state: stopped
+  when: service_check_systemd.rc == 0
+  become: yes
+
+- name: Disable the service with systemctl
+  ansible.builtin.systemd:
+    name: "{{ service_name }}"
+    enabled: no
+  when: service_check_systemd.rc == 0
+  become: yes
+
+- name: Stop the service with service command for RHEL 6 or earlier
+  ansible.builtin.command:
+    cmd: "service {{ service_name }} stop"
+  when: service_check_initd.stat.exists == true and ansible_facts['os_family'] == 'RedHat' and ansible_facts['distribution_major_version'] < '7'
+  become: yes
+
+- name: Disable the service with chkconfig for RHEL 6 or earlier
+  ansible.builtin.command:
+    cmd: "chkconfig {{ service_name }} off"
+  when: service_check_chkconfig.rc == 0 and ansible_facts['os_family'] == 'RedHat' and ansible_facts['distribution_major_version'] < '7'
+  become: yes
+
+- name: Remove the service with chkconfig for RHEL 6 or earlier
+  ansible.builtin.command:
+    cmd: "chkconfig --del {{ service_name }}"
+  when: service_check_chkconfig.rc == 0 and ansible_facts['os_family'] == 'RedHat' and ansible_facts['distribution_major_version'] < '7'
+  become: yes
+
+- name: Find service file in /usr/local/lib/systemd/system
+  ansible.builtin.stat:
+    path: "/usr/local/lib/systemd/system/{{ service_name }}.service"
+  register: service_file_usrlib
+  when: service_check_systemd.rc == 0
+  become: yes
+
+- name: Find service file in /etc/systemd/system
+  ansible.builtin.stat:
+    path: "/etc/systemd/system/{{ service_name }}.service"
+  register: service_file_etc
+  when: service_check_systemd.rc == 0
+  become: yes
+
+- name: Find service file in /lib/systemd/system
+  ansible.builtin.stat:
+    path: "/lib/systemd/system/{{ service_name }}.service"
+  register: service_file_lib
+  when: service_check_systemd.rc == 0
+  become: yes
+
+- name: Delete the service file in /usr/local/lib/systemd/system
+  ansible.builtin.command:
+    cmd: "rm -f /usr/local/lib/systemd/system/{{ service_name }}.service"
+  when: service_file_usrlib.stat.exists | default(false) and service_check_systemd.rc == 0
+  become: yes
+
+- name: Delete the service file in /etc/systemd/system
+  ansible.builtin.command:
+    cmd: "rm -f /etc/systemd/system/{{ service_name }}.service"
+  when: service_file_etc.stat.exists | default(false) and service_check_systemd.rc == 0
+  become: yes
+
+- name: Delete the service file in /lib/systemd/system
+  ansible.builtin.command:
+    cmd: "rm -f /lib/systemd/system/{{ service_name }}.service"
+  when: service_file_lib.stat.exists | default(false) and service_check_systemd.rc == 0
+  become: yes
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  when: service_check_systemd.rc == 0
+  become: yes
+
+- name: Delete the service file in /etc/init.d/ for RHEL 6 or earlier
+  ansible.builtin.command:
+    cmd: "rm -f /etc/init.d/{{ service_name }}"
+  when: service_check_initd.stat.exists == true and ansible_facts['os_family'] == 'RedHat' and ansible_facts['distribution_major_version'] < '7'
+  become: yes
+
+- name: Generate HTML report
+  template:
+    src: report.html.j2
+    dest: /tmp/results/report.html
+
+- name: Generate CSV report
+  template:
+    src: report.csv.j2
+    dest: /tmp/results/report.csv
 
