@@ -26,11 +26,6 @@ you will get the details of all the listed VM's
 <img width="1440" alt="Screenshot 2024-07-29 at 9 50 33 PM" src="https://github.com/user-attachments/assets/6b509d03-1a63-483b-8b73-afe9f78a0dc2">
 
 
-<img width="1440" alt="Screenshot 2024-07-29 at 9 56 09 PM" src="https://github.com/user-attachments/assets/dba4c680-15a1-4adb-9083-b4e4afb33798">
-
-
-
-
 
 
 - ## Deploy_ec2_instance_aws
@@ -47,6 +42,7 @@ you will get the details of all the listed VM's
 
 
 
+<img width="1440" alt="Screenshot 2024-07-29 at 9 56 09 PM" src="https://github.com/user-attachments/assets/dba4c680-15a1-4adb-9083-b4e4afb33798">
 
 
 - ## Run_command_on_ec2_instance
