@@ -12,10 +12,8 @@ I have created a various jobs for AWS.
 - ## Get_Instance_details
   This job will get all the instance details from selected rezion.
 
-
 - ## Deploy_ec2_instance_aws
   This job will be creating a AWS ec2 isntance with name specfied.
-
 
 - ## Run_command_on_ec2_instance
   This job will run a command on ec2 instance.
