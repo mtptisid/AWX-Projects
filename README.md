@@ -1,10 +1,32 @@
-# ansibleprojects
+# Ansible projects
 
-Here are some of my ansible projects built with Ansible Automation Platform
+# EC2 Instance Creation Playbook
 
+This project contains an Ansible playbook that automates the creation of an EC2 instance on Amazon Web Services (AWS). It allows users to define parameters such as region, instance type, image ID, key name, security group, and tags, and then creates a new EC2 instance with these settings.
 
-Using Ansible Automation Platform to build a EC2 Instance in Amazon Web service platform.
+The playbook also retrieves and prints the public IP address of the newly created instance.
 
+## Prerequisites
+
+To use this playbook, you'll need the following:
+
+- **Ansible**: Ansible is used to automate the EC2 instance creation process. You can install it with the following command:
+  
+  ```bash
+  sudo apt-get install ansible
+  ```
+
+## Variables
+
+The following variables should be defined in your playbook or provided via command-line arguments:
+	•	ec2_region: The AWS region where the EC2 instance will be created (e.g., us-west-2).
+	•	ec2_instance_type: The type of EC2 instance (e.g., t2.micro, m5.large).
+	•	ec2_image_id: The AMI ID to use for creating the instance (e.g., ami-0abcdef1234567890).
+	•	ec2_key_name: The name of your SSH key pair to access the instance (e.g., my-ec2-key).
+	•	ec2_security_group: The security group to associate with the EC2 instance (e.g., my-security-group).
+	•	ec2_instance_name: The name of the EC2 instance, which will be used as a tag (e.g., MyInstance).
+
+## Screenshots
 
 ![Image 29-07-24 at 8 38 AM](https://github.com/user-attachments/assets/260ed3b9-c5eb-4876-8053-0b6623560bbd)
 
@@ -24,12 +46,6 @@ Launch the job after selecting the rezion.
 you will get the details of all the listed VM's
 
 <img width="1440" alt="Screenshot 2024-07-29 at 9 50 33 PM" src="https://github.com/user-attachments/assets/6b509d03-1a63-483b-8b73-afe9f78a0dc2">
-
-
-
-
-- ## Deploy_ec2_instance_aws
-  This job will be creating a AWS ec2 isntance with name specfied.
 
 
   <img width="1440" alt="Screenshot 2024-07-29 at 9 53 31 PM" src="https://github.com/user-attachments/assets/be6d6938-beb5-4b72-9219-401550120dde">
